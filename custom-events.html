@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #dragItem {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+        color: white;
+        text-align: center;
+        line-height: 100px;
+        cursor: grab;
+      }
+
+      #dropZone {
+        width: 200px;
+        height: 200px;
+        border: 2px dashed #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="display: flex; gap: 30px; background-color: aliceblue">
+      <button
+        class="toggleColor"
+        onclick="handleclick(event)"
+        style="
+          background-color: black;
+          width: 200px;
+          height: 70px;
+          color: aliceblue;
+        "
+      >
+        Change Color
+      </button>
+
+      <button
+        onclick="handleAlert(event)"
+        class="Alert"
+        style="
+          background-color: black;
+          width: 200px;
+          height: 70px;
+          color: aliceblue;
+        "
+      >
+        Open Alert
+      </button>
+
+      <button
+        onclick="handlePrompt(event)"
+        class="Prompt"
+        style="
+          background-color: black;
+          width: 200px;
+          height: 70px;
+          color: aliceblue;
+        "
+      >
+        Open Prompt
+      </button>
+
+      <div id="dragItem" draggable="true">Drag Me</div>
+      <div id="dropZone">Drop Here</div>
+
+      <div
+        class="onmouseover"
+        onmouseleave="handleOnMouseLeave(event)"
+        onmousemove="handleMouseOver(event)"
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 150px;
+          width: 150px;
+          background-color: aquamarine;
+        "
+      >
+        Hover Me
+      </div>
+    </div>
+    <div
+      class="opendiv"
+      style="
+        display: none;
+        position: fixed;
+        place-content: center;
+        top: 40%;
+        left: 40%;
+        height: 300px;
+        width: 400px;
+        background-color: aquamarine;
+        border: #000;
+        border-radius: 50px;
+      "
+    >
+      Custom Alert Box
+    </div>
+    <script>
+      const dragItem = document.getElementById("dragItem");
+      const dropZone = document.getElementById("dropZone");
+      // // When dragging starts
+      dragItem.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", "dragged");
+        dragItem.style.opacity = "0.5";
+      });
+
+      // Prevent default to allow drop
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.style.border = "2px solid green";
+      });
+
+      // When item is dropped
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.style.border = "2px dashed black"; // Reset border
+        dropZone.appendChild(dragItem); // Move dragged item to drop zone
+        dragItem.style.opacity = "1";
+      });
+
+      // When dragging ends
+      dragItem.addEventListener("dragend", () => {
+        dragItem.style.opacity = "1";
+      });
+
+      // function handleclick(e) {
+      //   console.log("Button clicked:", e);
+
+      //   const customEvent = new CustomEvent("customEve", {
+      //     detail: { message: "Hello Haroon" },
+      //   });
+
+      //   document.dispatchEvent(customEvent);
+      // }
+
+      // document.addEventListener("customEve", (e) => {
+      //   console.log("Custom event triggered:", e);
+      //   alert(e.detail.message);
+      // });
+
+      // handling mouse over event
+      function handleMouseOver(e) {
+        const Hover_div = document.querySelector(".onmouseover");
+        const newEvent_over = new CustomEvent("mouseOver", {
+          detail: { display: "block" },
+        });
+
+        document.dispatchEvent(newEvent_over);
+      }
+      document.addEventListener("mouseOver", (e) => {
+        document.querySelector(".opendiv").style.display = e.detail.display;
+      });
+
+      // handling mouse leave event
+      function handleOnMouseLeave(e) {
+        const Hover_div = document.querySelector(".onmouseover");
+        const Hove_leave = new CustomEvent("onMouseLeave", {
+          detail: { display: "none" },
+        });
+        document.dispatchEvent(Hove_leave);
+      }
+      document.addEventListener("onMouseLeave", (e) => {
+        document.querySelector(".opendiv").style.display = e.detail.display;
+      });
+
+      function handlePrompt(e) {
+        const button = document.querySelector(".Prompt");
+
+        const OpenPrompt = new CustomEvent("Prompt", {
+          detail: { message: " Enter your Age !" },
+        });
+        document.dispatchEvent(OpenPrompt);
+      }
+      document.addEventListener("Prompt", (e) => {
+        const res = prompt(e.detail.message);
+        console.log("res =====>", res);
+      });
+
+      function handleclick(e) {
+        const button = document.querySelector(".toggleColor");
+        const currentColor = button.style.backgroundColor;
+
+        const togleColor = currentColor === "red" ? "black" : "red";
+        document.dispatchEvent(
+          new CustomEvent("changeColor", {
+            detail: { backgroundColor: togleColor },
+          })
+        );
+      }
+
+      document.addEventListener("changeColor", (e) => {
+        document.querySelector(".toggleColor").style.backgroundColor =
+          e.detail.backgroundColor;
+      });
+
+      function handleAlert(e) {
+        const Alert_Message = new CustomEvent("openAlert", {
+          detail: { message: " Hi Haroon!, welcome hare " },
+        });
+
+        document.dispatchEvent(Alert_Message);
+      }
+
+      document.addEventListener("openAlert", (e) => {
+        alert(e.detail.message);
+      });
+    </script>
+  </body>
+</html>
