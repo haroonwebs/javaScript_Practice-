@@ -102,7 +102,80 @@
     >
       Custom Alert Box
     </div>
+
+    <!-- relative div  -->
+    <div
+      class="relative"
+      style="
+        width: 400px;
+        height: 350px;
+        background-color: black;
+        border: 1px dotted gray;
+        border-radius: 20%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: yellow;
+        position: relative;
+        gap: 10px;
+        transition: all 1s ease;
+      "
+    >
+      <span
+        onclick="handleSpanClick(event)"
+        class="spanClick"
+        style="font-weight: 700"
+        >Click to show links</span
+      >
+      <!-- absolute div in side relative div -->
+
+      <div
+        class="absolute"
+        style="
+          justify-content: center;
+          width: 200px;
+          height: 300px;
+          background-color: white;
+          border-radius: 20px;
+          color: #000;
+          display: none;
+        "
+      >
+        close me
+      </div>
+    </div>
+
     <script>
+      // handling relative div clicks like span open absolute div
+
+      function handleSpanClick(e) {
+        const span = document.querySelector(".spanClick");
+        const currentContent = span.textContent;
+        const content =
+          currentContent === "Click to close links"
+            ? "Click to show links"
+            : "Click to close links";
+        const changeContent = new CustomEvent("SpanContent", {
+          detail: { textContent: content },
+        });
+        document.dispatchEvent(changeContent);
+        document.addEventListener("SpanContent", (e) => {
+          document.querySelector(".spanClick").textContent =
+            e.detail.textContent;
+        });
+
+        const togleDiv = document.querySelector(".absolute");
+        const currentdisplay = togleDiv.style.display;
+        const togleDisplay = currentdisplay === "none" ? "flex" : "none";
+        const newSpanEvent = new CustomEvent("OpenAbsoluteDiv", {
+          detail: { display: togleDisplay },
+        });
+        document.dispatchEvent(newSpanEvent);
+      }
+      document.addEventListener("OpenAbsoluteDiv", (e) => {
+        document.querySelector(".absolute").style.display = e.detail.display;
+      });
+
       const dragItem = document.getElementById("dragItem");
       const dropZone = document.getElementById("dropZone");
       // // When dragging starts
@@ -147,7 +220,6 @@
 
       // handling mouse over event
       function handleMouseOver(e) {
-        const Hover_div = document.querySelector(".onmouseover");
         const newEvent_over = new CustomEvent("mouseOver", {
           detail: { display: "block" },
         });
@@ -207,7 +279,6 @@
 
         document.dispatchEvent(Alert_Message);
       }
-
       document.addEventListener("openAlert", (e) => {
         alert(e.detail.message);
       });
